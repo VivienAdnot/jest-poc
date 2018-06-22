@@ -1,8 +1,5 @@
-//import * as app from '../src/app';
-//import * as math from '../src/math';
-
-const app = require('../src/app');
-const math = require('../src/math');
+import * as app from '../src/app';
+import * as math from '../src/math';
 
 //below is the most basic and less common type of mocking
 

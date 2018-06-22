@@ -1,9 +1,7 @@
-function add(a, b) {
+export const add = (a, b) => {
     return a + b;
-}
-
-function doAdd(a, b, callback) {
-    callback(a + b);
 };
 
-module.exports = { add, doAdd };
+export const doAdd = (a, b, callback) => {
+    callback(a + b);
+};
