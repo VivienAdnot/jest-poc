@@ -5,14 +5,14 @@ firebase.credential = {
 };
 
 firebase.initializeApp = () => {
-    console.log('firebaseAdmin initializeApp manual mock called');
+    //console.log('firebaseAdmin initializeApp manual mock called');
     return 'init ok';
 };
 
 firebase.messaging = () => ({
 
     sendToDevice: () => {
-        console.log('firebaseAdmin messaging().sendToDevice manual mock called');
+        //console.log('firebaseAdmin messaging().sendToDevice manual mock called');
         return Promise.resolve('sendToDevice ok');
     }
 

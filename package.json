@@ -26,7 +26,10 @@
     "jest": "^23.1.0"
   },
   "dependencies": {
+    "ajv": "^6.5.1",
+    "ajv-async": "^1.0.1",
     "firebase": "4.8.0",
-    "firebase-admin": "5.5.1"
+    "firebase-admin": "5.5.1",
+    "lodash": "^4.17.10"
   }
 }

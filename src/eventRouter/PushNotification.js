@@ -1,5 +1,11 @@
+import Ajv from 'ajv';
+import setupAsync from 'ajv-async';
 import firebase from 'firebase-admin';
 import config from './config';
+
+const acceptedLanguages = ['fr', 'en', 'es', 'th', 'vi', 'ru', 'de'];
+export const MOBILE_IOS = 'ios';
+export const MOBILE_ANDROID = 'android';
 
 const defaultMessagingOptions = {
     timeToLive: config.firebase.notificationTtl,
@@ -11,38 +17,105 @@ firebase.initializeApp({
     databaseURL: config.firebase.api.databaseURL
 });
 
+const SETTINGS_SCHEMA_SUBSET = {
+    type: 'object',
+    properties: {
+        language: { type: 'string', maximum: 2, default: 'fr', enum: acceptedLanguages },
+        pushNotification: { type: 'boolean', default: true }
+    },
+    required: ['pushNotification']
+};
+
+const TOKENS_SCHEMA_SUBSET = {
+    type: 'object',
+    properties: {
+        firebase: {
+            type: 'object',
+            properties: {
+                token: { type: 'string' },
+                mobile: { type: 'string', enum: [MOBILE_IOS, MOBILE_ANDROID] }
+            },
+            required: ['token', 'mobile']
+        }
+    }
+};
+
+const PUSH_INVISIBLE_FIREBASE_NOTIFICATION_PARAMETERS_SCHEMA = {
+    $async: true,
+    type: 'object',
+    properties: {
+        destination: {
+            type: 'object',
+            properties: {
+                tokens: TOKENS_SCHEMA_SUBSET,
+                settings: SETTINGS_SCHEMA_SUBSET,
+            },
+            required: ['tokens', 'settings']
+        },
+        code: { type: 'string' },
+        additionalData: {
+            type: 'object',
+            patternProperties: {
+                '^.*$': { type: ['number', 'string']}
+            }
+        },
+        options: {
+            type: 'object',
+            properties: {
+                priority: { type: 'string', enum: ['high', 'normal'] },
+                timeToLive: { type: 'number', minimum: 0 }
+            }
+        }
+    },
+    required: ['destination', 'code'],
+    additionalProperties: false
+};
+
+const ajv = setupAsync(new Ajv({
+    coerceTypes: true,
+    removeAdditional: false,
+    allErrors: false
+}));
+
+const validate = ajv.compile(PUSH_INVISIBLE_FIREBASE_NOTIFICATION_PARAMETERS_SCHEMA);
+
 export const pushInvisibleFirebaseNotification = (parameters) => {
 
-    const {
-        destination,
-        code,
-        additionalData = {},
-        options = {}
-     } = parameters;
+    return validate(parameters)
+    .then(() => {
 
-    if (!destination.settings.pushNotification) {
-
-        return Promise.resolve();
-
-    }
-
-    const message = {
-        data: {
+        const {
+            destination,
             code,
-            ...additionalData
+            additionalData = {},
+            options = {}
+         } = parameters;
+
+        if (!destination.settings.pushNotification) {
+
+            return Promise.resolve();
+
         }
-    };
 
-    const messagingOptions = {
-        ...defaultMessagingOptions,
-        ...options,
-        contentAvailable: true
-    };
+        const message = {
+            data: {
+                code,
+                ...additionalData
+            }
+        };
 
-    return firebase.messaging().sendToDevice(
-        destination.tokens.firebase.token,
-        message,
-        messagingOptions
-    );
+        const messagingOptions = {
+            ...defaultMessagingOptions,
+            ...options,
+            contentAvailable: true
+        };
+
+        return firebase.messaging().sendToDevice(
+            destination.tokens.firebase.token,
+            message,
+            messagingOptions
+        );
+
+    });
 
 };
