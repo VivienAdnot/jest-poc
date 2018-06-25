@@ -1,4 +1,4 @@
-import resolveIfFalse from '../src/func-promises';
+import resolveIfFalse from './promises';
 
 test('resolveIfFalse should resolve with undefined', () => {
 

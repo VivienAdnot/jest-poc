@@ -1,5 +1,5 @@
-const app = require('../src/app');
-const math = require('../src/math');
+const app = require('./app');
+const math = require('./math');
 
 test('calls math.add', () => {
     const addMock = jest.spyOn(math, 'add');

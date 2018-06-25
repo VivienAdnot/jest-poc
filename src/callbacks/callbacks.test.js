@@ -1,4 +1,4 @@
-const index = require('../src/index');
+const index = require('./callbacks');
 
 describe('add', () => {
     it('should add two numbers', () => {

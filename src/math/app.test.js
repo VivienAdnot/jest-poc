@@ -1,5 +1,5 @@
-import * as app from '../src/app';
-import * as math from '../src/math';
+import * as app from './app';
+import * as math from './math';
 
 //below is the most basic and less common type of mocking
 
