@@ -1,10 +1,4 @@
-import { doAdd, add } from './callbacks';
-
-describe('add', () => {
-    it('should add two numbers', () => {
-        expect(add(1, 2)).toBe(3);
-    })
-});
+import { doAdd } from './callbacks';
 
 test('calls callback with arguments added', () => {
     const mockCallback = jest.fn();

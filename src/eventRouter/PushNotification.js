@@ -1,23 +1,15 @@
-const admin = require('firebase-admin');
-import config from '../../config/config';
+import firebase from 'firebase-admin';
+import config from './config';
 
 const defaultMessagingOptions = {
     timeToLive: config.firebase.notificationTtl,
     priority: 'normal'
 };
 
-admin.initializeApp({
-    credential: admin.credential.cert(config.firebaseCert),
+firebase.initializeApp({
+    credential: firebase.credential.cert(config.firebaseCert),
     databaseURL: config.firebase.api.databaseURL
 });
-
-export let firebaseSendToDevice = (destination, message, messagingOptions) => {
-    return admin.messaging().sendToDevice(
-        destination.tokens.firebase.token,
-        message,
-        messagingOptions
-    );
-};
 
 export const pushInvisibleFirebaseNotification = (parameters) => {
 
@@ -47,6 +39,10 @@ export const pushInvisibleFirebaseNotification = (parameters) => {
         contentAvailable: true
     };
 
-    return firebaseSendToDevice(destination, message, messagingOptions);
+    return firebase.messaging().sendToDevice(
+        destination.tokens.firebase.token,
+        message,
+        messagingOptions
+    );
 
 };
