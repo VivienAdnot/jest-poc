@@ -3,6 +3,10 @@ import setupAsync from 'ajv-async';
 import firebase from 'firebase-admin';
 import config from './config';
 
+import { formatMessage, setLanguage } from './services/i18n';
+
+const CALL_RINGING_BODY_KEY = 'notification.callRinging.body';
+
 const acceptedLanguages = ['fr', 'en', 'es', 'th', 'vi', 'ru', 'de'];
 export const MOBILE_IOS = 'ios';
 export const MOBILE_ANDROID = 'android';
@@ -117,5 +121,75 @@ export const pushInvisibleFirebaseNotification = (parameters) => {
         );
 
     });
+
+};
+
+export const pushCallRingingFirebaseNotification = (parameters) => {
+
+    const {
+        destination,
+        code,
+        additionalData = {},
+        options = {}
+     } = parameters;
+
+    // eslint-disable-next-line prefer-const
+    let message = {
+        data: {
+            code,
+            ...additionalData
+        }
+    };
+
+    let content;
+
+    try {
+
+        // Firebase needs every additionalData field to be stringified
+        const { firstname, lastname } = JSON.parse(additionalData.initiator);
+        setLanguage(destination.settings.language);
+
+        content = {
+            title: `${firstname} ${lastname}`,
+            body: formatMessage(CALL_RINGING_BODY_KEY)
+        };
+
+    } catch (i18nError) {
+
+        return Promise.reject(i18nError);
+
+    }
+
+    if (destination.tokens.firebase.mobile === MOBILE_IOS) {
+
+        message.notification = {
+            ...content,
+            sound: 'airtel_tamil.aiff',
+            initiator: additionalData.initiator
+        };
+
+    } else if (destination.tokens.firebase.mobile === MOBILE_ANDROID) {
+
+        message.data = {
+            ...message.data,
+            ...content
+        };
+
+    } else {
+
+        return Promise.reject(new Error(`unknown device ${destination.tokens.firebase.mobile}`));
+
+    }
+
+    const messagingOptions = {
+        ...defaultMessagingOptions,
+        ...options
+    };
+
+    return firebase.messaging().sendToDevice(
+        destination.tokens.firebase.token,
+        message,
+        messagingOptions
+    );
 
 };

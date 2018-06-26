@@ -28,8 +28,11 @@
   "dependencies": {
     "ajv": "^6.5.1",
     "ajv-async": "^1.0.1",
+    "country-language": "^0.1.7",
     "firebase": "4.8.0",
     "firebase-admin": "5.5.1",
+    "html-entities": "^1.2.1",
+    "intl-messageformat": "^2.2.0",
     "lodash": "^4.17.10"
   }
 }

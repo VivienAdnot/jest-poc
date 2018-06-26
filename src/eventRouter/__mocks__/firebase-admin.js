@@ -11,9 +11,13 @@ firebase.initializeApp = () => {
 
 firebase.messaging = () => ({
 
-    sendToDevice: () => {
-        //console.log('firebaseAdmin messaging().sendToDevice manual mock called');
-        return Promise.resolve('sendToDevice ok');
+    sendToDevice: (destination, message, messagingOptions) => {
+        console.log('sendToDevice called', message, messagingOptions);
+        return Promise.resolve({
+            destination,
+            message,
+            messagingOptions
+        });
     }
 
 });
