@@ -1,4 +1,41 @@
-import resolveUri from './index';
+import { getDefaultResponse, getParser, resolveUri } from './index';
+
+// ====================================
+// getDefaultResponse
+// ====================================
+
+test('resolveUri should return null if content is not an url', () => {
+
+    const shortUri = 'https://repl.it/repls';
+
+    return expect(getDefaultResponse(shortUri))
+    .toEqual({
+        url: shortUri,
+        title: shortUri
+    });
+
+});
+
+test('resolveUri should return null if content is not an url', () => {
+
+    const tooLongUri = 'https://www.amplement.com/common/appBootstrap.js';
+
+    return expect(getDefaultResponse(tooLongUri))
+    .toEqual({
+        url: 'https://www.amplement.com/common/appBootstrap.js',
+        title: 'https://www.amplement.com...'
+    });
+
+});
+
+// ====================================
+// getParser
+// ====================================
+
+
+// ====================================
+// resolveUri
+// ====================================
 
 test('resolveUri should return null if content is not an url', () => {
 
@@ -40,7 +77,7 @@ test('resolveUri should return default data if content type is unhandled', () =>
 
     return expect(resolveUri(content))
     .resolves.toEqual({
-        url: 'https://www.amplement.com/common/appBootstrap.js',
+        url: content,
         title: 'https://www.amplement.com...'
     });
 

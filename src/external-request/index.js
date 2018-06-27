@@ -2,21 +2,20 @@ import Promise from 'bluebird';
 import { isRequestSuccessful, getUriOrReject } from './utils';
 import * as pictureParser from './parsers/picture';
 import * as htmlParser from './parsers/html';
-
 import validate from './response.schema';
 
 const request = Promise.promisify(require('request'));
 
-const getDefaultResponse = uri =>
+const parsers = [pictureParser, htmlParser];
+
+export const getDefaultResponse = uri =>
 
     ({
         url: uri,
         title: uri.length > 25 ? `${uri.substr(0, 25)}...` : uri
     });
 
-const parsers = [pictureParser, htmlParser];
-
-const getParser = (response) => {
+export const getParser = (response) => {
 
     const matchedParser = parsers.find(parser => parser.matchMimeType(response));
 
@@ -26,7 +25,7 @@ const getParser = (response) => {
 
 };
 
-const resolveUri = content =>
+export const resolveUri = content =>
 
     getUriOrReject(content)
     .then(uri =>
@@ -62,5 +61,3 @@ const resolveUri = content =>
     )
      // stop silently
     .catch(() => Promise.resolve(null));
-
-export default resolveUri;
