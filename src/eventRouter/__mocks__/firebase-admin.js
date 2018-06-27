@@ -5,14 +5,12 @@ firebase.credential = {
 };
 
 firebase.initializeApp = () => {
-    //console.log('firebaseAdmin initializeApp manual mock called');
     return 'init ok';
 };
 
 firebase.messaging = () => ({
 
     sendToDevice: (destination, message, messagingOptions) => {
-        console.log('sendToDevice called', message, messagingOptions);
         return Promise.resolve({
             destination,
             message,
