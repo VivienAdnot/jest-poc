@@ -17,11 +17,13 @@ export const getDefaultResponse = uri =>
 
 export const getParser = (response) => {
 
-    const matchedParser = parsers.find(parser => parser.matchMimeType(response));
+    const matchedParser = parsers.find(
+        parser => parser.matchMimeType(response)
+    );
 
     return (matchedParser)
         ? Promise.resolve(matchedParser)
-        : Promise.reject(new Error('no mime parser matched the type'));
+        : Promise.reject(new Error('Unknown mime type'));
 
 };
 
@@ -49,8 +51,10 @@ export const resolveUri = content =>
 
                 parser.extractData(response)
                 .then(data =>
+
                     validate(data)
                     .then(() => data)
+
                 )
 
             );

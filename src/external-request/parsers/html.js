@@ -1,5 +1,7 @@
 import cheerio from 'cheerio';
 
+export const name = 'html';
+
 export const matchMimeType = response => response.headers['content-type'].indexOf('text/html') !== -1;
 
 export const extractData = (response) => {
