@@ -10,9 +10,9 @@ const isDisplayableMimeType = requestedMimeType => [
     .filter(mimeType => mimeType === requestedMimeType)
     .length > 0;
 
-export const isPicture = response => isDisplayableMimeType(response.headers['content-type']);
+export const matchMimeType = response => isDisplayableMimeType(response.headers['content-type']);
 
-export const getPictureResponse = (response) => {
+export const extractData = (response) => {
 
     let href;
 

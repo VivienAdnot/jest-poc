@@ -1,8 +1,8 @@
 import cheerio from 'cheerio';
 
-export const isHtml = response => response.headers['content-type'].indexOf('text/html') !== -1;
+export const matchMimeType = response => response.headers['content-type'].indexOf('text/html') !== -1;
 
-export const getHtmlResponse = (response) => {
+export const extractData = (response) => {
 
     const DOM = cheerio.load(response.body);
 

@@ -1,7 +1,8 @@
 import Promise from 'bluebird';
 import { isRequestSuccessful, getUriOrReject } from './utils';
-import { getPictureResponse, isPicture } from './parsers/picture';
-import { getHtmlResponse, isHtml } from './parsers/html';
+import * as pictureParser from './parsers/picture';
+import * as htmlParser from './parsers/html';
+
 import validate from './response.schema';
 
 const request = Promise.promisify(require('request'));
@@ -12,6 +13,18 @@ const getDefaultResponse = uri =>
         url: uri,
         title: uri.length > 25 ? `${uri.substr(0, 25)}...` : uri
     });
+
+const parsers = [pictureParser, htmlParser];
+
+const getParser = (response) => {
+
+    const matchedParser = parsers.find(parser => parser.matchMimeType(response));
+
+    return (matchedParser)
+        ? Promise.resolve(matchedParser)
+        : Promise.reject(new Error('no mime parser matched the type'));
+
+};
 
 const resolveUri = content =>
 
@@ -32,29 +45,16 @@ const resolveUri = content =>
 
             }
 
-            if (isPicture(response)) {
+            return getParser(response)
+            .then((parser) =>
 
-                return getPictureResponse(response)
-                .then(pictureResponse =>
+                parser.extractData(response)
+                .then(data =>
+                    validate(data)
+                    .then(() => data)
+                )
 
-                    validate(pictureResponse)
-                    .then(() => pictureResponse)
-
-                );
-
-            } else if (isHtml) {
-
-                return getHtmlResponse(response)
-                .then(htmlResponse =>
-
-                    validate(htmlResponse)
-                    .then(() => htmlResponse)
-
-                );
-
-            }
-
-            return getDefaultResponse(uri);
+            );
 
         })
         .catch(() => getDefaultResponse(uri))
@@ -64,4 +64,3 @@ const resolveUri = content =>
     .catch(() => Promise.resolve(null));
 
 export default resolveUri;
-

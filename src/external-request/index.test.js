@@ -34,8 +34,6 @@ test('resolveUri should return fetched data if content is html', () => {
 
 });
 
-// http://bluebirdjs.com/
-
 test('resolveUri should return default data if content type is unhandled', () => {
 
     const content = 'https://www.amplement.com/common/appBootstrap.js';
