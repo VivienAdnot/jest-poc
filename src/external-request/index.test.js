@@ -111,7 +111,7 @@ describe('resolveUri', () => {
 
     });
 
-    test('should return default data when mime type is unknown', () => {
+    test.only('should return default data when mime type is unknown', () => {
 
         const content = 'https://www.amplement.com/common/appBootstrap.js';
 

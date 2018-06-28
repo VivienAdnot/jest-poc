@@ -37,6 +37,7 @@
     "html-entities": "^1.2.1",
     "intl-messageformat": "^2.2.0",
     "lodash": "^4.17.10",
+    "raven": "^2.6.3",
     "request": "^2.87.0"
   }
 }
